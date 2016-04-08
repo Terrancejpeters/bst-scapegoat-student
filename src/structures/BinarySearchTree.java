@@ -212,35 +212,34 @@ public class BinarySearchTree<T extends Comparable<T>> implements BSTInterface<T
 		}
 		double lowBound = Math.pow(2, height());
 		double highBound = Math.pow(2, height() + 1);
-		//System.out.println("Low is " + lowBound + " High is " + highBound + " size is " + size);
 		if (lowBound <= size && size < highBound) {
 			return true;
 		}
 		return false;
 	}
-
+	
 	@Override
 	public void balance() {
-
+		// TODO
 		LinkedList<T> nodes = getAsLL();
-		for (int i = 0; i < nodes.size(); i++){
-			remove(nodes.get(i));
-		}
-		insertTree(0, nodes.size() - 1, nodes);
+		BinarySearchTree<T> newTree = new BinarySearchTree<T>() ;
+		insertTree(0, (size() - 1), nodes, newTree) ;
+		this.root = newTree.getRoot() ;
 	}
+	
 
-	public void insertTree(int lower, int upper, LinkedList<T> nodes) {
+	public void insertTree(int lower, int upper, LinkedList<T> nodes, BinarySearchTree<T> tree) {
 		
 		if (lower == upper)
-			add(nodes.get(lower));
+			tree.add(nodes.get(lower));
 		else if (lower + 1 == upper) {
-			add(nodes.get(lower));
-			add(nodes.get(upper));
+			tree.add(nodes.get(lower));
+			tree.add(nodes.get(upper));
 		} else {
 			int mid = (lower + upper) / 2;
-			add(nodes.get(mid));
-			insertTree(lower, mid - 1, nodes);
-			insertTree(mid+1,upper,nodes);
+			tree.add(nodes.get(mid));
+			insertTree(lower, mid - 1, nodes,tree);
+			insertTree(mid+1,upper,nodes,tree);
 		}
 	}
 
