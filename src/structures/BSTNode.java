@@ -52,4 +52,11 @@ public class BSTNode<T extends Comparable<T>> implements BSTNodeInterface<T> {
 	public void setRight(BSTNode<T> right) {
 		this.right = right;
 	}
+	
+	public boolean hasChildren(){
+		if (right != null || left != null){
+			return true;
+		}
+		return false;
+	}
 }

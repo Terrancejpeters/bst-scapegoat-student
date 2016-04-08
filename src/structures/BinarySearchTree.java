@@ -32,7 +32,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements BSTInterface<T
 		while (toTraverse.hasNext()) {
 			T temp = toTraverse.next();
 			if (temp.equals(t)) {
-
+				size--;
 				return true;
 			}
 		}
@@ -164,18 +164,20 @@ public class BinarySearchTree<T extends Comparable<T>> implements BSTInterface<T
 	// Need to figure this out
 	@Override
 	public boolean equals(BSTInterface<T> other) {
-		// TODO
-		if (size != other.size()) {
-			return false;
-		}
-		Iterator<T> thisIt = inorderIterator();
-		Iterator<T> otherIt = other.inorderIterator();
-		while (thisIt.hasNext()) {
-			if (!thisIt.next().equals(otherIt.next())) {
-				return false;
-			}
-		}
-		return true;
+		return equaHelper(root,other.getRoot());
+	}
+	
+	public boolean equaHelper(BSTNode<T> thisNode, BSTNode<T> otherNode){
+		
+		if (thisNode == otherNode) {
+	        return true;
+	    }
+	    if (thisNode == null || otherNode == null) {
+	        return false;
+	    }
+	    return thisNode.getData().equals(otherNode.getData()) &&
+	           equaHelper(thisNode.getLeft(), otherNode.getLeft()) &&
+	           equaHelper(thisNode.getRight(), otherNode.getRight());
 	}
 
 	@Override
@@ -205,13 +207,13 @@ public class BinarySearchTree<T extends Comparable<T>> implements BSTInterface<T
 
 	@Override
 	public boolean isBalanced() {
-		// TODO
 		if (size == 0) {
 			return true;
 		}
-		double lowBound = Math.pow(2,height());
+		double lowBound = Math.pow(2, height());
 		double highBound = Math.pow(2, height() + 1);
-		if (lowBound <= size && size < highBound){
+		//System.out.println("Low is " + lowBound + " High is " + highBound + " size is " + size);
+		if (lowBound <= size && size < highBound) {
 			return true;
 		}
 		return false;
@@ -219,56 +221,37 @@ public class BinarySearchTree<T extends Comparable<T>> implements BSTInterface<T
 
 	@Override
 	public void balance() {
-		/*TreeToVine(root);
-		LinkedList<T> toBalance = getAsLL();
-		BinarySearchTree<T> temp = new BinarySearchTree<T>();
-		*/
-		
+
 		LinkedList<T> nodes = getAsLL();
-		insertTree(0, nodes.size()-1, nodes);
+		for (int i = 0; i < nodes.size(); i++){
+			remove(nodes.get(i));
+		}
+		insertTree(0, nodes.size() - 1, nodes);
 	}
-	
-	public void insertTree(int lower, int upper, LinkedList<T> nodes){
+
+	public void insertTree(int lower, int upper, LinkedList<T> nodes) {
+		
 		if (lower == upper)
 			add(nodes.get(lower));
-		else if (lower + 1 == upper){
+		else if (lower + 1 == upper) {
 			add(nodes.get(lower));
 			add(nodes.get(upper));
-		}
-		else{
-			int mid = (lower + upper)/2;
+		} else {
+			int mid = (lower + upper) / 2;
 			add(nodes.get(mid));
 			insertTree(lower, mid - 1, nodes);
+			insertTree(mid+1,upper,nodes);
 		}
 	}
-	
-	/*
-	public void TreeToVine(BSTNode<T> root){
-		BSTNode<T> tail = root;
-		BSTNode<T> rest = tail.getRight();
-		while (rest != null){
-			if (rest.getLeft() == null){
-				tail = rest;
-				rest = rest.getRight();
-			}
-			else{
-				BSTNode<T> temp = rest.getLeft();
-				rest.getLeft().setRight(rest.getRight());
-				temp.getRight().setSelf(rest);
-				rest = temp;
-				tail.setRight(temp);
-			}
-		}
-	}*/
-	
-	public LinkedList<T> getAsLL(){
+
+	public LinkedList<T> getAsLL() {
 		LinkedList<T> thisVals = new LinkedList<T>();
 		Iterator<T> thisIt = inorderIterator();
 		while (thisIt.hasNext()) {
 			thisVals.add(thisIt.next());
 		}
 		return thisVals;
-		
+
 	}
 
 	@Override

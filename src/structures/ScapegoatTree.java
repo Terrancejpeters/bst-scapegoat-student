@@ -24,7 +24,11 @@ public class ScapegoatTree<T extends Comparable<T>> extends
 	 */
 	@Override
 	public void add(T element) {
-		// TODO		
+		upperBound++;
+		double LogLim = Math.log10(upperBound) / Math.log10(3/2);
+		if (LogLim < upperBound){
+			
+		}
 	}
 	
 	/**
